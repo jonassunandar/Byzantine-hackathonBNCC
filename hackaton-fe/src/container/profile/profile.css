@@ -1,0 +1,22 @@
+.profile{
+    padding: 24px 24px 36px
+}
+
+.icon{
+    color: blue;
+    margin-right: 1em;
+}
+
+.account-info{
+    margin: 16px 16px 19px;
+  }
+  
+.dp{
+cursor: pointer;
+background-color: #dee2ee;
+border-radius: 50%;
+vertical-align: middle;
+width: 6em;
+height: 6em;
+text-align: center;
+}
