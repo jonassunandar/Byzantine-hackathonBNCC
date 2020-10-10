@@ -3,7 +3,8 @@ a{cursor: pointer;}
 
 .button-primary{
     background-color: #0064d2;
-    color: #fedd00;
+    /* color: #fedd00; */
+    padding: 12px 0;
 }
 
 .btn{

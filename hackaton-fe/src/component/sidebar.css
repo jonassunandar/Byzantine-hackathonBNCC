@@ -75,6 +75,8 @@
 
 .pageTitle{
     font-weight: 700 !important;
+    color: #0064d2;
+    cursor: pointer;
 }
 
 .account-info{
