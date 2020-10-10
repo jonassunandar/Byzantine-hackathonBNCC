@@ -93,7 +93,7 @@ class NavbarClass extends React.Component {
                         {/* <NavbarToggler onClick={this.toggleNavbar}/> */}
                         <Nav navbar className='ml-3'>
                             <NavItem>
-                                <div className='pageTitle'>{'BYZANTINE'}</div>
+                                <h1 className='pageTitle' onClick={()=>window.location = '/dashboard'}>{'BYZANTINE'}</h1>
                             </NavItem>
                         </Nav>
                         <Nav navbar className='mx-auto'></Nav>

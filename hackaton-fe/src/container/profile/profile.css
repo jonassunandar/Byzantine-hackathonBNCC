@@ -11,12 +11,40 @@
     margin: 16px 16px 19px;
   }
   
-.dp{
+.dp-page{
 cursor: pointer;
 background-color: #dee2ee;
 border-radius: 50%;
 vertical-align: middle;
-width: 6em;
-height: 6em;
+width: 10rem;
+height: 10rem;
 text-align: center;
+font-size: 3rem;
+}
+
+.menu-group{
+    padding: 12px;
+}
+
+.basic{
+    padding: 24px;
+    
+    color: white !important;
+    cursor: pointer;
+}
+.sensitive{
+    padding: 24px;
+    color: white !important;
+    cursor: pointer;
+}
+
+.button-primary:focus, .button-primary.focus {
+    background-color: #0064d2 !important
+}
+
+.inputMenu{
+    background-color: #f5f6fa;
+    padding: 12px;
+    border: 0.5px inset #49494c;
+    border-radius: 4px;
 }
