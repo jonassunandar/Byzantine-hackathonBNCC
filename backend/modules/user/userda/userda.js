@@ -58,6 +58,7 @@ const updateUserProfile = (userid, data, response) => {
     return
   }
   const [queryString, param] = buildUpdateQueryString("users", data, userid)
+  console.log(queryString, param);
   pool.query(queryString, param, (error, results) => {
     if(error){
       response.status(200).json({
@@ -72,8 +73,6 @@ const updateUserProfile = (userid, data, response) => {
 }
 
 const getUserProfile = (userid, response) => {
-  userid = dbaccess.escapeParameterString(userid)
-  
   pool.query("SELECT * FROM users WHERE id = $1", [userid], (error, results) => {
     if(error){
       response.status(200).json({

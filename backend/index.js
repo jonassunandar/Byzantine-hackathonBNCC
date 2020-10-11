@@ -2,7 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const app = express()
 var cors = require('cors')
-const port = 3000
+const port = 8081
 
 global.JWT_SECRET = "hahaxsuperxsecret"
 

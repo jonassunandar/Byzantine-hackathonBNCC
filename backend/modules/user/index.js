@@ -13,9 +13,14 @@ module.exports = function(app){
         userdm.register
     );
     
-    app.get('/get_profile/:userid',
+    app.get('/get_profile',
         middleware.isLoggedIn,
         userdm.getUserProfile
+    );
+    
+    app.post('/get_sensitive_profile',
+        middleware.isLoggedIn,
+        userdm.getUserProfileSensitive
     );
     
     app.post('/update_non_sensitive',
@@ -25,6 +30,6 @@ module.exports = function(app){
     
     app.post('/update_sensitive',
         middleware.isLoggedIn,
-        userdm.updateNonSenstitve,
+        userdm.updateSensitive,
     )
 }

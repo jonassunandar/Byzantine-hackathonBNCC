@@ -18,20 +18,21 @@ const login = async (request, response) => {
     if(err){
         return {"error":err}
     }
+    console.log("passwordd ", password);
     // Todo: Jonas integrate with smart contract for authentication
     let sdk = new SDK();
     let web3 = new Web3("http://127.0.0.1:8545");
     let contractAddr = blockchainAddress;
-    
     let seed = password + salt;
     let pk = web3.utils.sha3(seed);
-    let hashedPK = web3.utils.sha3(seed);
+    let hashedPK = web3.utils.sha3(pk);
+    console.log("ini blockchainAddress", blockchainAddress, "salt ", salt, " pk ", pk, "hashedPK ", hashedPK)
     let user = await sdk.generatedWallet(pk);
     let resHashedPK = await sdk.fetch("checkHash", user, contractAddr, hashedPK);
     
     console.log(resHashedPK, contractAddr);
     
-    if (resHashedPK.result===true){
+    if (resHashedPK.result==true){
         var jwtToken = jwt.sign({
             "userid":userid,
             "email":email
@@ -52,16 +53,15 @@ const register = async (request, response) => {
     const password = request.body.password || ""
     const salt = generateSalt()
     
-    // Todo: Jonas  create password to smart contract
-    
     var blockchainAddress;
     
     let sdk = new SDK();
     let web3 = new Web3("http://127.0.0.1:8545");
     let seed = password + salt;
     let pk = web3.utils.sha3(seed);
+    let hashedPK = web3.utils.sha3(pk);
     let user = await sdk.generatedWallet(pk);
-    let hashedPK = web3.utils.sha3(seed);
+    
     let ipfs = web3.utils.sha3("not created");
     
     
@@ -73,12 +73,60 @@ const register = async (request, response) => {
 }
 
 const getUserProfile = (request, response) => {
-    var userid = request.params.userid
+    var userid = request.user.id
     userda.getUserProfile(userid, response)
 }
 
-const updateSenstitve = async(request, response) => {
-    const userid = request.user.userid || ""
+const getUserProfileSensitive = async(request, response) => {
+    // var userid = request.params.userid;
+    var email = request.user.email;
+    const password = request.body.password || ""
+    
+    
+    var [, blockchainAddress, salt, err] = await userda.getBlockChainAddressAndSalt(email)
+    
+    let sdk = new SDK();
+    let web3 = new Web3("http://127.0.0.1:8545");
+    
+    let seed = password + salt;
+    let pk = web3.utils.sha3(seed);
+    let hashedPK = web3.utils.sha3(pk);
+    let user = await sdk.generatedWallet(pk);
+    
+    let resHashedPK = await sdk.fetch("checkHash", user, blockchainAddress, hashedPK);
+    
+    if (resHashedPK.result==false) 
+        response.status(200).json({
+            "error": "User is not authenticated",
+        })
+    try{
+        let result = await sdk.fetch("getIPFS", user, blockchainAddress);
+        let cid = result.result;
+        if (cid==web3.utils.sha3("not created")){
+            response.status(200).json({
+                message:"no data sensitive available"
+            })
+            return;
+        }
+        console.log("ini cid ", cid);
+        let encryptedData = await ipfs.cat(cid);
+        console.log("encrypted ", encryptedData)
+        response.status(200).json({
+            "message": 'success update sensitive',
+            "data": JSON.parse(encryptedData),
+        })
+    }catch(error){
+        console.log(error)
+        response.status(200).json({
+            "error": "error getIPFS",
+        })
+        return
+    }
+    
+}
+
+const updateSensitive = async(request, response) => {
+    const userid = request.user.id || ""
     const email = request.user.email || ""
     const password = request.body.password || ""
     let sdk = new SDK();
@@ -87,17 +135,33 @@ const updateSenstitve = async(request, response) => {
     
     let input={
       'ktp': updatedData.ktp,
-      'ccNumber': updatedData.ccNumber
+      'cc': updatedData.cc
     }
     let cid;
-    let user = await sdk.generatedWallet(salt);
+    
+    let web3 = new Web3("http://127.0.0.1:8545");
+    console.log("password ", password);
     var [, blockchainAddress, salt, err] = await userda.getBlockChainAddressAndSalt(email)
-    try{
-        cid = await ipfs.add(JSON.stringify(input));
-        //update sc
-        let newIPFS = cid;
+    let seed = password + salt;
+    let pk = web3.utils.sha3(seed);
+    let hashedPK = web3.utils.sha3(pk);
+    let user = await sdk.generatedWallet(pk);
+    
+    console.log("ini blockchainAddress", blockchainAddress, "salt ", salt, " pk ", pk, "hashedPK ", hashedPK)
+    let resHashedPK = await sdk.fetch("checkHash", user, blockchainAddress, hashedPK);
+    
+    //MASIH USER IS NOT AUTHENTICATED
+    if (resHashedPK.result==false){
+        response.status(200).json({
+            "error": "User is not authenticated",
+        })
+        return
+    } 
         
-        let res = await sdk.fetch("setIPFS", user, blockchainAddress, newIPFS);
+    try{
+        let newIPFS = cid;
+        cid = await ipfs.add(JSON.stringify(input));
+        let result = await sdk.fetch("setIPFS", user, blockchainAddress, cid);
         response.status(200).json({
             "message": 'success update sensitive',
         })
@@ -105,13 +169,11 @@ const updateSenstitve = async(request, response) => {
         response.status(200).json({
             "error": error,
         })
-        return
     }
-    // userda.updateUserProfile(userid, updatedData, response)
 }
 
 const updateNonSenstitve = (request, response) => {
-    const userid = request.user.userid || ""
+    const userid = request.user.id || ""
     
     var updatedData = request.body
     delete updatedData["userid"]
@@ -124,4 +186,6 @@ module.exports = {
     register,
     getUserProfile,
     updateNonSenstitve,
+    updateSensitive,
+    getUserProfileSensitive
 }

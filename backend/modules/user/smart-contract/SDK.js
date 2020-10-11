@@ -78,10 +78,11 @@ module.exports = class GeneralizeSDK {
             arguments: [...args]
         }).encodeABI();
         
-    
+        console.log("deploying... ", fromAddress, "args ", args);
         await this.web3.eth.getTransactionCount( fromAddress ).then( async (count)=>{
             
             let data = contractData;
+            
             let gasLimit;
             let tempTx={
                 from:fromAddress,
@@ -130,7 +131,7 @@ module.exports = class GeneralizeSDK {
     }
 
     async contract(method, callback, addr, ...args){
-        console.log("method addr", method, addr)
+        console.log("fetching... ", method, "addr: ", addr, "params ", args)
         
         let res = {
             __ABI: ABI,
