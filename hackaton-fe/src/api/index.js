@@ -17,7 +17,8 @@ async function get(apiEndpoint){
     const response = await axios.get(config.baseUrl+apiEndpoint, {
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('access')
+        'Authorization': 'jwt ' + localStorage.getItem('access'),
+        'Login-Token': localStorage.getItem('access'),
       }
     });
     return response;
@@ -30,7 +31,7 @@ function put(apiEndpoint, payload) {
   return axios.put(config.baseUrl+apiEndpoint, payload, {
     headers: {
       'Content-Type': 'multipart/form-data',
-      'Authorization': 'Bearer ' + localStorage.getItem('access'),
+      'Authorization': 'JWT ' + localStorage.getItem('access'),
     }
   })
   .then((response) => {
@@ -46,7 +47,7 @@ async function post_noAuth(apiEndpoint, payload) {
       method: 'post',
       url: config.baseUrl+apiEndpoint,
       data: payload,
-      headers: {'Content-Type': 'multipart/form-data' }
+      headers: {'Content-Type': 'application/json' }
     })
     return response;
   } catch (error) {
@@ -60,7 +61,8 @@ async function post(apiEndpoint, payload) {
     const response = await axios({
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('access'),
+        'Authorization': 'JWT ' + localStorage.getItem('access'),
+        'Login-Token': localStorage.getItem('access'),
       },
       method: 'post',
       url: config.baseUrl+apiEndpoint,
@@ -76,7 +78,7 @@ function download(apiEndpoint, payload) {
   return axios.post(config.baseUrl+apiEndpoint, payload, {
     headers: {
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('access'),
+      'Authorization': 'JWT ' + localStorage.getItem('access'),
     },
     responseType: 'blob',
   })
@@ -93,7 +95,7 @@ function patch(apiEndpoint, body){
     url: config.baseUrl+apiEndpoint,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + localStorage.getItem('access'),
+      'Authorization': 'JWT ' + localStorage.getItem('access'),
     },
     data: qs.stringify(body),
   })
@@ -110,7 +112,7 @@ function deleted(apiEndpoint, body) {
     url: config.baseUrl+apiEndpoint,
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Bearer ' + localStorage.getItem('access'),
+      'Authorization': 'JWT ' + localStorage.getItem('access'),
     },
     data: qs.stringify(body),
   })

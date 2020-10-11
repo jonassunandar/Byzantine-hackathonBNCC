@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import helper from '../utils/helper.js';
 import { register } from './../actions/auth';
+import web3Utils from 'web3-utils';
 import { Link, Redirect } from 'react-router-dom';
 import { 
     Button,
@@ -10,6 +11,7 @@ import {
     Form
  } from 'reactstrap';
  import './cloud.css';
+import { api } from '../api/index.js';
 
 class Register extends React.Component {
     constructor(props) {
@@ -29,9 +31,9 @@ class Register extends React.Component {
                     validEmail: true
                 },
                 {
-                    key: 'name',
-                    label: 'Nama',
-                    isRequired: true
+                    key: 'firstName',
+                    label: 'Nama Depan',
+                    // isRequired: true
                 },
                 {
                     key: 'password',
@@ -65,21 +67,32 @@ class Register extends React.Component {
                 valid = false;
             }
         }
+        console.log(errMsg)
         this.setState({errMsg: errMsg});
         this.props.register.err= '';
         this.props.register.errEng= '';
         return valid;
     }
 
-    handleOnSubmit = (e) => {
+    handleOnSubmit = async (e) => {
       e.preventDefault();
-      if (this.validation()){
-            this.props.registerAction({
-                email: this.state.email,
-                password: this.state.password,
-                name: this.state.name
-            })
-        }
+      try{
+            if(this.validation()){
+                this.setState({loading: true})
+                const res = await api.post_noAuth('register', {
+                    email: this.state.email,
+                    password: web3Utils.sha3(this.state.password)
+                });
+                console.log('res', res)
+                this.setState({loading: false})
+                console.log(res.status, res.data.message, '----')
+                if (res.status === 200 && res.data.message === 'register success')
+                    this.setState({redirect: '/login'})
+            }
+      }catch(e){
+          console.log('error at registering', e)
+          this.setState({errRegister: 'Unknown Error!'})
+      }
     };
 
     changeHandler = (e) => {
@@ -88,46 +101,44 @@ class Register extends React.Component {
         })
     }
 
-    componentWillReceiveProps(nextProps){
-        if (nextProps.register.msg == 'Success'){
-            this.setState({
-                redirect: '/login',
-                password: '',
-                passwordConfirmation: ''
-            })
-        }
-    }
-
     render() {
     const lang = helper.lang(this.props.language)
 
     if(this.state.redirect)
-        return (<Redirect to={{pathname: this.state.redirect, redirectMsg: lang('Registrasi Berhasil!', 'Registration Successful!')}}></Redirect>)    
+        return (<Redirect to={{pathname: this.state.redirect, redirectMsg: 'Registrasi Berhasil!'}}></Redirect>)    
 
       return (
         <div>
             <div id="clouds">
-                <div class="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x4" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x5" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x1" style={{left: '10vw', top : '20vh'}}></div>
+                <div className="cloud x2" style={{left: '70vw', top : '25vh'}}></div>
+                <div className="cloud x3" style={{left: '10vw', top : '55vh'}}></div>
+                <div className="cloud x4" style={{left: '30vw', top : '44vh'}}></div>
+                <div className="cloud x5" style={{left: '55vw', top : '62vh'}}></div>
+                <div className="cloud x3" style={{left: '80vw', top : '25vh'}}></div>
+                <div className="cloud x2" style={{left: '80vw', top : '0vh'}}></div>
+                <div className="cloud x1" style={{left: '14vw', top : '30vh'}}></div>
             </div>
 
             <div className='centerDiv card card-signup card-no-border'>
                 <Form onSubmit={this.handleOnSubmit}>
                     <h4 className='mb-4 mt-3'>{lang('Daftar Sebagai User Baru', 'Sign up as New User')}</h4>
-                    <FormGroup>
-                        <Input className='input' name='name' type='text' placeholder={lang('Nama', 'Name')} value={this.state.name} onChange={this.changeHandler}/>
-                        { this.state.errMsg['name'] ? (
+                    {/* <FormGroup>
+                        <Input className='input' name='firstName' type='text' placeholder={lang('Nama Depan', 'Name')} value={this.state.firstName} onChange={this.changeHandler}/>
+                        { this.state.errMsg['firstName'] ? (
                             <h6 className='errValidation'>
-                                {this.state.errMsg['name']}
+                                {this.state.errMsg['firstName']}
                             </h6>
                         ) : null}
                     </FormGroup>
+                    <FormGroup>
+                        <Input className='input' name='lastName' type='text' placeholder={lang('Nama Belakang', 'Name')} value={this.state.lastName} onChange={this.changeHandler}/>
+                        { this.state.errMsg['lastName'] ? (
+                            <h6 className='errValidation'>
+                                {this.state.errMsg['lastName']}
+                            </h6>
+                        ) : null}
+                    </FormGroup> */}
                     <FormGroup>
                         <Input className='input' name='email' type='text' placeholder='Email' value={this.state.email} onChange={this.changeHandler}/>
                         { this.state.errMsg['email'] ? (
@@ -153,9 +164,9 @@ class Register extends React.Component {
                         ) : null}
                     </FormGroup>
 
-                    { this.props.register.err ? (
+                    { this.state.errRegister ? (
                         <h6 className='errValidation mb-3'>
-                            {this.props.language == 'indo' ? this.props.register.err: this.props.register.errEng}
+                            {this.state.errRegister}
                         </h6>
                     ) : null}
 
@@ -167,9 +178,9 @@ class Register extends React.Component {
                             <Button className='w-100  button-primary' type='submit'>{lang('Saya sudah mempunyai Akun', 'I already have an account')}</Button>
                         </Link>
                     </FormGroup>
-                    { this.props.register.loading ? (
-                        <div class="spinner-border text-success" role="status">
-                            <span class="sr-only">Loading...</span>
+                    { this.state.loading ? (
+                        <div className="spinner-border text-success" role="status">
+                            <span className="sr-only">Loading...</span>
                         </div>
                     ): null }
                 </Form>

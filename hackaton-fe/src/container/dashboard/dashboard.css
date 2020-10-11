@@ -17,19 +17,48 @@
     height: auto */
 }
 
+.banner{
+    max-height: 80vh;
+}
 .imgBg{
-    max-height: 90vh;
+    max-height: 80vh;
+    object-fit: cover;
 }
 
 .adv{
-    background-color: red;
+    background-color: #5dfaff;
+    /* opacity: 0.6; */
 }
 .adv2{
-    background-color: blue;
+    background-color: #fff;
+    /* opacity: 0.6; */
 }
 .adv3{
-    background-color: yellow;
+    background-color: #00c8ff;
+    /* opacity: 0.6; */
 }
 .adv4{
-    background-color: purple;
+    background-color: #fff;
+    /* opacity: 0.6; */
+}
+
+.imgIcon{
+    width:100%;
+    height: auto;
+    max-width: 30vw;
+    max-height: 10rem;
+}
+
+.p-10{
+    padding: 10rem !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+.advInfo{
+    margin-top: 2rem;
+}
+
+.opacityImg{
+    opacity: 0.8 !important;
 }

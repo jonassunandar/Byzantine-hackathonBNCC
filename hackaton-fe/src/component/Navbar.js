@@ -100,14 +100,14 @@ class NavbarClass extends React.Component {
                         <Nav navbar className='align-items-center'>
                             <Dropdown  isOpen={this.state.dropdownNavbarOpen} toggle={this.toggleDropdown} className=''>
                                 <DropdownToggle caret>
-                                    {'Hello, ' + profile.name || ''}
+                                    {'Hello, ' + localStorage.getItem('firstName') || ''}
                                 </DropdownToggle>
                                 <DropdownMenu right>
                                     <div className='account-info'>
                                         <div className='account-dp'>
-                                            <div className='dp m-auto'><div style={{verticalAlign: 'middle', lineHeight: '4em'}} onClick={() => window.location= '/profile'}>{profile.initial}</div></div>
+                                            <div className='dp m-auto'><div style={{verticalAlign: 'middle', lineHeight: '4em'}} onClick={() => window.location= '/profile'}>{localStorage.getItem('initial')}</div></div>
                                         </div>
-                                        <h5 className='acount-name text-center mt-3'>{profile.name}</h5>
+                                        <h5 className='acount-name text-center mt-3'>{localStorage.getItem('firstName')} {localStorage.getItem('lastName')}</h5>
                                     </div>
                                     <DropdownItem divider />
                                     <DropdownItem onClick={() => window.location= '/profile'}>

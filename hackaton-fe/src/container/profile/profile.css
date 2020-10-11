@@ -48,3 +48,7 @@ font-size: 3rem;
     border: 0.5px inset #49494c;
     border-radius: 4px;
 }
+
+.modal{
+    top: 20vh !important;
+}

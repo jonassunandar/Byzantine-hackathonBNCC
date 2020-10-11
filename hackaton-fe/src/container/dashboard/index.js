@@ -110,31 +110,26 @@ class Event extends React.Component {
         <div className=''>
                <div className='banner'>
                <Card inverse>
-                    <CardImg className='img-fluid imgBg' width="100%" maxHeight='80vh' src="/bg.png" alt="Card image cap" />
+                    <CardImg className='img-fluid imgBg opacityImg' width="100%" maxHeight='80vh' src="/bg.png" alt="Card image cap" />
                     <CardImgOverlay>
                     {/* <CardTitle>Card Title</CardTitle> */}
                     <CardText className='text-center text-black h2 vertical-align-middle m-auto bannerTitle'>
                         Byzantine
                     </CardText>
                     <CardText className='text-center text-black h2 vertical-align-middle m-auto bannerText'>
-                        Belanja Aman bersama Blockchain!
+                        Miliki Privasi Data
                     </CardText>
                     <CardText>
-                        {/* <small className="text-muted">Last updated 3 mins ago</small> */}
+                       
                     </CardText>
                     </CardImgOverlay>
                 </Card>
-                   {/* <img className='img-fluid' src='/bg.jpg'/> */}
                </div>
 
                <div className='info my-4'>
                    <div className='row align-items-center'>
-                       <div className='col-md-8'>
-                           <div className='row align-items-center'>
-                               <div className='col-4 text-right'><img className='img-fluid dashboard-icon' src='/user.png'></img></div>
-                               <div className='col-4 text-center'><img className='img-fluid dashboard-icon' src='/bc.jpg'></img></div>
-                               <div className='col-4 text-left'><div className='h2' style={{color: 'blue', fontSize: '4vw'}}>Byzantine</div></div>
-                           </div>
+                       <div className='col-md-8 text-center'>
+                           <img className='img-fluid pl-5' src='/info.png' />
                        </div>
                        <div className='col-md-4'>
                            <div className='cardInfo p-3'>
@@ -151,22 +146,28 @@ class Event extends React.Component {
 
                <div className='advantages my-5'>
                    <div className='row no-gutters'>
-                       <div className='col-3 adv text-center py-3'>
-                           <img className='img-fluid' src='/logo192.png'></img>
-                           <div className='advInfo'>Lorem Ipsum</div>
+                       <div className='col-4 adv text-center py-3'>
+                            <div className='p-10'>
+                                <img className='img-fluid imgIcon' src='/secure.png'></img>
+                            </div>
+                           <div className='advInfo h3'>Data Privacy</div>
                        </div>
-                       <div className='col-3 adv2 text-center py-3'>
-                           <img className='img-fluid' src='/logo192.png'></img>
-                           <div className='advInfo'>Lorem Ipsum</div>
+                       <div className='col-4 adv2 text-center py-3'>
+                            <div className='p-10'>
+                                <img className='img-fluid imgIcon' src='/distributed.png'></img>
+                            </div>
+                           <div className='advInfo h3'>Distributed</div>
                        </div>
-                       <div className='col-3 adv3 text-center py-3'>
-                           <img className='img-fluid' src='/logo192.png'></img>
-                           <div className='advInfo'>Lorem Ipsum</div>
+                       <div className='col-4 adv text-center py-3'>
+                            <div className='p-10'>
+                                <img className='img-fluid imgIcon' src='/key.png'></img>
+                            </div>
+                            <div className='advInfo h3'>Secure</div>
                        </div>
-                       <div className='col-3 adv4 text-center py-3'>
+                       {/* <div className='col-3 adv4 text-center py-3'>
                            <img className='img-fluid' src='/logo192.png'></img>
-                           <div className='advInfo'>Lorem Ipsum</div>
-                       </div>
+                           <div className='advInfo h3'>Lorem Ipsum</div>
+                       </div> */}
                    </div>
                </div>
         </div>

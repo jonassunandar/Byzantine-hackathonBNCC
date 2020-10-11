@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
+import web3Utils from 'web3-utils';
 
 import helper from '../../utils/helper.js';
 import './profile.css';
@@ -12,7 +13,10 @@ import {
     FormGroup,
     Input,
     FormFeedback,
-
+    Modal,
+    ModalBody,
+    ModalFooter,
+    ModalHeader,
     Spinner,
     InputGroup,
     UncontrolledDropdown,
@@ -20,14 +24,21 @@ import {
     DropdownMenu,
     DropdownItem 
  } from 'reactstrap';
+import { api } from '../../api/index.js';
 
 class Profile extends React.Component {
     constructor(props) {
         super(props);
-        const lang = helper.lang(this.props.language);
+        
         this.state = {
             showPage: 'basic',
-            errMsg: {}
+            errMsg: {},
+            firstName: localStorage.getItem('firstName'),
+            lastName: localStorage.getItem('lastName'),
+            name: localStorage.getItem('firstName') + ' '+ localStorage.getItem('lastName'),
+            initial: localStorage.getItem('initial'),
+            email: localStorage.getItem('email'),
+            address: localStorage.getItem('address'),
         };
         
     }
@@ -51,27 +62,112 @@ class Profile extends React.Component {
         this.setState({redirect: '/profile/edit'})
     }
 
-    saveProfile = () => {
+    saveProfile = async () => {
+        try{
+            this.setState({loading: true})
+            const res = await api.post('update_non_sensitive', {
+                address: this.state.address,
+                first_name: this.state.firstName,
+                last_name: this.state.lastName,
+            })
+            console.log('res non sensitive', res);
+            this.getUserProfile();
+        }catch(e){
+            console.log('error at updating non sensitive', e);
+            this.setState({loading: false, errUpdate: 'Unknown Error!'})
+        }
         this.setState({editting: !this.state.editting})
     }
 
-    saveSensitiveProfile = () => {
-        this.setState({editting: !this.state.editting})
+    getUserProfile = async () => {
+        try{
+            const res= await api.get('get_profile/');
+            const firstName = res.data.data[0].first_name || 'user';
+            const lastName = res.data.data[0].last_name || '';
+            console.log('res, get user profile', res);
+            localStorage.setItem('email', res.data.data[0].email);
+            localStorage.setItem('firstName', firstName);
+            localStorage.setItem('lastName', lastName);
+            localStorage.setItem('bcAddress', res.data.data[0].bcAddress);
+            localStorage.setItem('initial', firstName.substring(0,1) + lastName.substring(0,1));
+            localStorage.setItem('id', res.data.data[0].id);
+            localStorage.setItem('address', res.data.data[0].address);
+            window.location = '/profile'
+        }catch(e){
+            console.log('error at getting user profile', e)
+            this.setState({errLogin: 'Unknown Error', loading: false})
+        }
+    }
+
+    saveSensitiveProfile = async () => {
+        try{
+            this.setState({loading: true})
+            const res = await api.post('update_sensitive', {
+                ktp: this.state.ktp,
+                cc: this.state.cc,
+                password: web3Utils.sha3(this.state.password)
+            })
+            console.log('res sensitive', res);
+            this.setState({editting: !this.state.editting, showModal: false,})
+        }catch(e){
+            console.log('error at updating sensitive', e);
+            this.setState({loading: false, errUpdate: 'Unknown Error!'})
+        }
+        
+        this.setState({password: '', loading: false})
+    }
+
+    getSensitiveDate = () => {
+        this.setState({showModal: true, nextFn: async () => {
+            try{
+                this.setState({loading: true})
+                const res = await api.post('get_sensitive_profile', {
+                    password: web3Utils.sha3(this.state.password),
+                })
+                console.log('res get sensitive data', res);
+                if(res.status === 200 && res.data.message === 'success update sensitive')
+                    this.setState({ktp: res.data.data.ktp, cc: res.data.data.cc})
+                this.setState({showSensitive: true})
+            }catch(e){
+                console.log('error at getting sensitive', e);
+            }
+            this.setState({showModal: false,password: '', loading: false})
+        }})
     }
 
     render() {
         console.log(this.state, 'state')
         return (
         <div className='mt-4'>
+            <Modal isOpen={this.state.showModal} toggle={() => this.setState({showModal: !this.state.showModal})} >
+                <ModalBody  className='pb-0'>
+                    <FormGroup>
+                        <div>Masukan Password: </div>
+                        <Input className='input' name='password' type='password' placeholder='Password' value={this.state.password} onChange={this.changeHandler}/>
+                    </FormGroup>
+                    <div className='text-center'>
+                    
+                    </div>
+                </ModalBody>
+                <ModalFooter className='pt-0'>
+                    { this.state.loading ? (
+                        <div className="spinner-border text-success" role="status">
+                            <span className="sr-only">Loading...</span>
+                        </div>
+                    ): null }
+                    <Button onClick={this.state.nextFn} className='button-primary px-5'>Submit</Button>
+                </ModalFooter>
+            </Modal>
+
                 <div className='container'>
                     <div className='row'>
                         <div className='col-sm-4'>
                             <div className='card'>
                                 <div className='profile'>
                                     <div className='acount-dp'>
-                                        <div className='dp-page m-auto'><div style={{verticalAlign: 'middle', lineHeight: '10rem'}} onClick={() => window.location= '/profile'}>{this.props.profile.user.initial}</div></div>
+                                        <div className='dp-page m-auto'><div style={{verticalAlign: 'middle', lineHeight: '10rem'}} onClick={() => window.location= '/profile'}>{this.state.initial}</div></div>
                                     </div>
-                                    <h5 className='mt-3'>{this.props.profile.user.name}</h5>
+                                    <h5 className='mt-3'>{this.state.name}</h5>
                                     <span class="icon">Verified</span><img src="/verified.svg" alt=""/>
                                 </div>
                                 
@@ -98,14 +194,14 @@ class Profile extends React.Component {
                                             <div className='col-md-6'>
                                             <FormGroup>
                                                 <div>Nama Depan: </div>
-                                                <Input invalid={this.state.errMsg['firstName'] ? true: false} className='input' name='firstName' type='text' placeholder='Nama Depan' value={this.state.firstName || this.props.profile.user.firstName} onChange={this.changeHandler}/>
+                                                <Input invalid={this.state.errMsg['firstName'] ? true: false} className='input' name='firstName' type='text' placeholder='Nama Depan' value={this.state.firstName || this.state.firstName} onChange={this.changeHandler}/>
                                                 { this.state.errMsg['email'] ? (<FormFeedback>{this.state.errMsg['email']} </FormFeedback> ) : null}
                                             </FormGroup>
                                             </div>
                                             <div className='col-md-6'>
                                             <FormGroup>
                                                 <div>Nama Belakang: </div>
-                                                <Input invalid={this.state.errMsg['lastName'] ? true: false} className='input' name='lastName' type='text' placeholder='Nama Belakang' value={this.state.lastName || this.props.profile.user.lastName} onChange={this.changeHandler}/>
+                                                <Input invalid={this.state.errMsg['lastName'] ? true: false} className='input' name='lastName' type='text' placeholder='Nama Belakang' value={this.state.lastName || this.state.lastName} onChange={this.changeHandler}/>
                                                 { this.state.errMsg['email'] ? (<FormFeedback>{this.state.errMsg['email']} </FormFeedback> ) : null}
                                             </FormGroup>
                                             </div>
@@ -113,14 +209,14 @@ class Profile extends React.Component {
                                             <div className='col-md-12'>
                                             <FormGroup>
                                                 <div>Email: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.email}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.email}</div>
                                             </FormGroup>
                                             </div>
 
                                             <div className='col-md-12'>
                                             <FormGroup>
                                                 <div>Alamat: </div>
-                                                <Input invalid={this.state.errMsg['address'] ? true: false} className='input' name='address' type='text' placeholder='Alamat' value={this.state.address || this.props.profile.user.address} onChange={this.changeHandler}/>
+                                                <Input invalid={this.state.errMsg['address'] ? true: false} className='input' name='address' type='text' placeholder='Alamat' value={this.state.address || this.state.address} onChange={this.changeHandler}/>
                                                 { this.state.errMsg['address'] ? (<FormFeedback>{this.state.errMsg['address']} </FormFeedback> ) : null}
                                             </FormGroup>
                                             </div>
@@ -138,24 +234,24 @@ class Profile extends React.Component {
                                         <div className='row'>
                                             <div className='col-md-6'>
                                                 <div>Nama Depan: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.firstName || '-'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.firstName || '-'}</div>
                                             </div>
                                             <div className='col-md-6'>
                                                 <div>Nama Belakang: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.lastName || '-'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.lastName || '-'}</div>
                                             </div>
 
                                             <div className='col-md-12'>
                                                 <div>Email: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.email || '-'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.email || '-'}</div>
                                             </div>
                                             <div className='col-md-12'>
                                                 <div>Alamat: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.address || '-'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.address || '-'}</div>
                                             </div>
                                             {/* <div className='col-md-6'>
                                                 <div>Kota: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.city || ''}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.city || ''}</div>
                                             </div> */}
 
                                         </div>
@@ -178,11 +274,11 @@ class Profile extends React.Component {
                                         <div className='row'>
                                             <div className='col-md-12'>
                                                 <div>KTP: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.props.profile.user.ktp || '-' : '****'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.state.ktp || '-' : '****'}</div>
                                             </div>
                                             <div className='col-md-12'>
                                                 <div>CC: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.props.profile.user.cc|| '-' : '****'}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.state.cc|| '-' : '****'}</div>
                                             </div>
                                             
                                         </div>
@@ -197,7 +293,7 @@ class Profile extends React.Component {
                                                     </Button>
                                                 </>
                                             ) : (
-                                                <Button className='button-primary px-5' onClick={()=> {this.setState({showSensitive: !this.state.showSensitive})}}>
+                                                <Button className='button-primary px-5' onClick={this.getSensitiveDate}>
                                                     Tunjukan
                                                 </Button>
                                             )}
@@ -223,7 +319,7 @@ class Profile extends React.Component {
                                                     </div>
                                                 </div>
                                                 <div className='text-right mt-3'>
-                                                    <Button className='button-primary px-5' onClick={this.saveSensitiveProfile}>
+                                                    <Button className='button-primary px-5' onClick={() => this.setState({showModal: true, nextFn: this.saveSensitiveProfile})}>
                                                         Simpan
                                                     </Button>
                                                 </div>
