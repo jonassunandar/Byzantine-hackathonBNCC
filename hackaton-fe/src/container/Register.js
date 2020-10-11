@@ -33,7 +33,7 @@ class Register extends React.Component {
                 {
                     key: 'firstName',
                     label: 'Nama Depan',
-                    isRequired: true
+                    // isRequired: true
                 },
                 {
                     key: 'password',
@@ -123,7 +123,7 @@ class Register extends React.Component {
             <div className='centerDiv card card-signup card-no-border'>
                 <Form onSubmit={this.handleOnSubmit}>
                     <h4 className='mb-4 mt-3'>{lang('Daftar Sebagai User Baru', 'Sign up as New User')}</h4>
-                    <FormGroup>
+                    {/* <FormGroup>
                         <Input className='input' name='firstName' type='text' placeholder={lang('Nama Depan', 'Name')} value={this.state.firstName} onChange={this.changeHandler}/>
                         { this.state.errMsg['firstName'] ? (
                             <h6 className='errValidation'>
@@ -138,7 +138,7 @@ class Register extends React.Component {
                                 {this.state.errMsg['lastName']}
                             </h6>
                         ) : null}
-                    </FormGroup>
+                    </FormGroup> */}
                     <FormGroup>
                         <Input className='input' name='email' type='text' placeholder='Email' value={this.state.email} onChange={this.changeHandler}/>
                         { this.state.errMsg['email'] ? (

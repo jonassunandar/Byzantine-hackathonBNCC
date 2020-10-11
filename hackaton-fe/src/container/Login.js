@@ -87,7 +87,7 @@ class Login extends React.Component {
     }
 
     login = async () => {
-        // if(this.state.captcha){
+        if(this.state.captcha){
             try{
                 this.setState({loading: true})
                 const res= await api.post_noAuth('login', {
@@ -108,9 +108,9 @@ class Login extends React.Component {
                 console.log('error at login', e)
                 this.setState({errLogin: 'Unknown Error', loading: false})
             }
-        // } else {
-        //     this.setState({errLogin: 'Captcha required!', loading: false})
-        // }
+        } else {
+            this.setState({errLogin: 'Captcha required!', loading: false})
+        }
     }
 
     getUserProfile = async () => {
