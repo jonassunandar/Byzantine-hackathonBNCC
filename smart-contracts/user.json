@@ -7,9 +7,9 @@
 				"type": "bytes32"
 			},
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "_ipfs",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -39,15 +39,15 @@
 		"inputs": [
 			{
 				"indexed": true,
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "prevIpfs",
-				"type": "bytes32"
+				"type": "string"
 			},
 			{
 				"indexed": true,
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "newIpfs",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "NewIpfs",
@@ -96,9 +96,9 @@
 		"name": "getIPFS",
 		"outputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -140,9 +140,9 @@
 	{
 		"inputs": [
 			{
-				"internalType": "bytes32",
+				"internalType": "string",
 				"name": "newIpfs",
-				"type": "bytes32"
+				"type": "string"
 			}
 		],
 		"name": "setIPFS",

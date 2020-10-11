@@ -1,0 +1,21 @@
+{
+  "name": "smart-contracts",
+  "version": "1.0.0",
+  "description": "",
+  "main": "attest.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "eth-ecies": "^1.0.5",
+    "ethereumjs-wallet": "^1.0.1",
+    "generalize-sdk": "^1.0.8",
+    "ipfs": "^0.50.2",
+    "nano-ipfs-store": "^0.1.3"
+  }
+}

@@ -128,8 +128,8 @@ module.exports = class GeneralizeSDK {
         });
     }
 
-    async contract(addr, method, callback, ...args){
-        
+    async contract(method, callback, addr, ...args){
+        console.log("method addr", method, addr)
         let ABI = require("../../user.json"); //WARNINING!!
         
         let res = {
@@ -151,7 +151,6 @@ module.exports = class GeneralizeSDK {
                         }else {
                             fromAddress = null;
                         }
-                        
                         return new Promise( (resolve,reject) => {
                             if (fromAddress) return this.contract.methods[x.name](...args).call({from:fromAddress}).then(data=>{
                                 let result = {
@@ -177,7 +176,7 @@ module.exports = class GeneralizeSDK {
                             let gasLimit;
                             let tempTx={
                                 to: this.__addr,
-                                gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('10', 'gwei')),
+                                gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'gwei')),
                                 data: data,
                                 nonce: count,
                             }
@@ -185,23 +184,23 @@ module.exports = class GeneralizeSDK {
                             try{
                                 gasLimit = await this.__SDK.web3.eth.estimateGas(tempTx);
                             }catch(err){
+                                console.log(err);
                                 gasLimit = 30000000;
                             };
-
+                            console.log("gas limit bro ", gasLimit);
                             let tx = {
                                 from: fromAddress,
                                 to: this.__addr,
                                 nonce: count,
                                 data: data,
                                 // gasPrice: '1',
-                                gasPrice: '100000',
                                 gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'wei')),
                                 gasLimit: gasLimit,
                                 chainId: this.chainId
                             };
                             let signedTx;
                             try{
-                                if(tx.chainId != 1212) tx.gasPrice = this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('10', 'gwei'));
+                                if(tx.chainId != 1212) tx.gasPrice = this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'gwei'));
                                 signedTx = await this.__callback.sign(tx); //needs documentation
                             }catch(err){
                                 result = err;
@@ -233,7 +232,7 @@ module.exports = class GeneralizeSDK {
     }
 
     async fetch(fn,callback,addr = '',...params){
-        let ctr = await this.contract(addr, callback);
+        let ctr = await this.contract(fn, callback, addr, ...params);
         return ctr[fn](...params);
     }
 
@@ -278,6 +277,52 @@ module.exports = class GeneralizeSDK {
             fromBlock:0,
             toBlock: 'latest'
         })
+    }
+    
+    async generatedWallet (seed) {
+        return {
+            encrypt: (data)=>{
+                // let pk = this.web3.utils.sha3(seed);
+                // pk = this.web3.eth.accounts.privateKeyToAccount(pk).privateKey;
+                // // console.log(Wallet);
+                // console.log("ini pk ", pk);
+                // // const wallet = Wallet.fromPrivateKey(util.toBuffer(pk))
+                // // const pubkey= wallet.getPublicKeyString()
+                // // console.log("yow", pubkey);
+                // // console.log("pubkey ", privateToPublic(pk).toString());
+                // let bufferPubKey = util.privateToPublic(pk);
+                // let bufferData = new Buffer(data);
+                // let encryptedData = ecies.encrypt(bufferPubKey, bufferData);
+                // // console.log(encryptedData.toString('base64'));
+                // return encryptedData.toString('base64');
+            },
+            decrypt: (encryptedData)=>{
+                // let pk = web3.utils.sha3(seed);
+                // pk = web3.eth.accounts.privateKeyToAccount(pk).privateKey;
+                // console.log("sampe sini ?", encryptedData);
+                // encryptedData = new Buffer(encryptedData, 'base64');
+                // let userPrivateKey = new Buffer(pk, 'hex');
+                // let decryptedData = ecies.decrypt(userPrivateKey, encryptedData);
+                // console.log("decrypted data", decryptedData);
+                // return decryptedData.toString('utf8');
+            },
+            sign: async (tx)=> {
+                let pk = this.web3.utils.sha3(seed);
+                let acc = this.web3.eth.accounts.privateKeyToAccount(pk);
+                tx.fromAddress = acc.address;
+                let signedTx = await acc.signTransaction(tx);
+                return signedTx.rawTransaction;
+            },
+            getAddress: async () => {
+                let pk = this.web3.utils.sha3(seed);
+                return this.web3.eth.accounts.privateKeyToAccount(pk).address;
+            },
+            getSign: async (message)=> {
+                let pk = this.web3.utils.sha3(seed);
+                let acc = this.web3.eth.accounts.privateKeyToAccount(pk);
+                return await acc.sign(message);
+            }
+        }
     }
 
 }
