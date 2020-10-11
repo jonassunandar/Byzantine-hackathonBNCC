@@ -8,10 +8,10 @@ CREATE TABLE users (
     first_name VARCHAR(64),
     last_name VARCHAR(64),
     address VARCHAR(128),
-    blockchain_address char(40),
+    blockchain_address char(42),
     pwd_salt VARCHAR(64)
 );
 
 CREATE INDEX user_index ON users (email);
 
-INSERT INTO users (email, address, blockchainAddress, pwd_salt) VALUES("jonassunandar@gmail.com", "malang", "jonas", "salty_jonas")
+INSERT INTO users (email, address, blockchain_address, pwd_salt) VALUES('jonassunandar@gmail.com', 'malang', 'jonas', 'salty_jonas');

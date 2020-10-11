@@ -13,12 +13,14 @@ module.exports = function(app){
         userdm.register
     );
     
-    app.get('/get_profile',
+    app.get('/get_profile/:userid',
+        middleware.isLoggedIn,
         userdm.getUserProfile
     )
     
     app.post('/update_non_sensitive',
         middleware.validateParameter(["userid"]),
+        middleware.isLoggedIn,
         userdm.updateNonSenstitve,
     )
 }

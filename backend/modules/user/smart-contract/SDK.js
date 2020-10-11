@@ -1,6 +1,7 @@
 let Web3 = require("web3");
 let ENS = require('ethereum-ens');
 const chains = require('./chainID.json');
+const ABI = require("./userABI.json"); //WARNINING!!
 
 module.exports = class GeneralizeSDK {
     constructor(_ensAddress, _rpc="127.0.0.1:8545"){
@@ -128,9 +129,8 @@ module.exports = class GeneralizeSDK {
         });
     }
 
-    async contract(addr, method, callback, ...args){
-        
-        let ABI = require("../../user.json"); //WARNINING!!
+    async contract(method, callback, addr, ...args){
+        console.log("method addr", method, addr)
         
         let res = {
             __ABI: ABI,
@@ -151,7 +151,6 @@ module.exports = class GeneralizeSDK {
                         }else {
                             fromAddress = null;
                         }
-                        
                         return new Promise( (resolve,reject) => {
                             if (fromAddress) return this.contract.methods[x.name](...args).call({from:fromAddress}).then(data=>{
                                 let result = {
@@ -177,7 +176,7 @@ module.exports = class GeneralizeSDK {
                             let gasLimit;
                             let tempTx={
                                 to: this.__addr,
-                                gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('10', 'gwei')),
+                                gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'gwei')),
                                 data: data,
                                 nonce: count,
                             }
@@ -185,23 +184,23 @@ module.exports = class GeneralizeSDK {
                             try{
                                 gasLimit = await this.__SDK.web3.eth.estimateGas(tempTx);
                             }catch(err){
+                                console.log(err);
                                 gasLimit = 30000000;
                             };
-                            console.log("example data", data);
+                            console.log("gas limit bro ", gasLimit);
                             let tx = {
                                 from: fromAddress,
                                 to: this.__addr,
                                 nonce: count,
                                 data: data,
                                 // gasPrice: '1',
-                                gasPrice: '100000',
                                 gasPrice: this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'wei')),
                                 gasLimit: gasLimit,
                                 chainId: this.chainId
                             };
                             let signedTx;
                             try{
-                                if(tx.chainId != 1212) tx.gasPrice = this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('10', 'gwei'));
+                                if(tx.chainId != 1212) tx.gasPrice = this.__SDK.web3.utils.toHex(this.__SDK.web3.utils.toWei('0', 'gwei'));
                                 signedTx = await this.__callback.sign(tx); //needs documentation
                             }catch(err){
                                 result = err;
@@ -233,7 +232,7 @@ module.exports = class GeneralizeSDK {
     }
 
     async fetch(fn,callback,addr = '',...params){
-        let ctr = await this.contract(addr, callback);
+        let ctr = await this.contract(fn, callback, addr, ...params);
         return ctr[fn](...params);
     }
 
