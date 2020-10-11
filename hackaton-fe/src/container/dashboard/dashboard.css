@@ -1,0 +1,35 @@
+.bannerText{
+    position: relative !important;
+    top: 45% !important;
+    color: black;
+    font-size: 5vw !important;
+}
+
+.bannerTitle{
+    top: 40%;
+    color: black;
+    position: relative;
+    font-size: 8vw !important;
+}
+
+.dashboard-icon{
+    /* max-width: 100%;
+    height: auto */
+}
+
+.imgBg{
+    max-height: 90vh;
+}
+
+.adv{
+    background-color: red;
+}
+.adv2{
+    background-color: blue;
+}
+.adv3{
+    background-color: yellow;
+}
+.adv4{
+    background-color: purple;
+}

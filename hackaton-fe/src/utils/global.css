@@ -109,3 +109,7 @@ a{cursor: pointer;}
 body{
     background-color: #f5f6fa;
 }
+
+#rc-anchor-alert, .rc-anchor-alert{
+    display: none !important;
+}

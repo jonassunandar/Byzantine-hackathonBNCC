@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
 import { login } from './../actions/auth';
+import ReCAPTCHA from "react-google-recaptcha";
 import helper from '../utils/helper.js';
 import { 
     Button,
@@ -10,6 +11,7 @@ import {
     Form
  } from 'reactstrap';
 import './cloud.css';
+
 
 class Login extends React.Component {
     constructor(props) {
@@ -91,14 +93,14 @@ class Login extends React.Component {
         return (
         <div>
             <div id="clouds">
-                <div class="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x4" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x5" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
-                <div class="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x4" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x5" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x3" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x2" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
+                <div className="cloud x1" style={{left: (Math.random()*60) + 'vw', top : (Math.random()*60) + 'vh'}}></div>
             </div>
             <div className='centerDiv card card-signup card-no-border' >
             
@@ -126,8 +128,13 @@ class Login extends React.Component {
                             {this.props.language == 'indo' ? this.props.login.err: this.props.login.errEng}
                         </h6>
                     ) : null}
+                    
+                    <ReCAPTCHA
+                        sitekey="6LcWB9YZAAAAAC3t36OVFZG00BcYyMGugjWoFpY8"
+                        onChange={(value) => { console.log("Captcha value:", value); this.setState({captcha: true}) } }
+                    />
 
-                    <FormGroup>
+                    <FormGroup className='mt-3'>
                         <Link to={{pathname: '/dashboard'}}>
                             <Button className='w-100 button-primary' 
                             // type='submit'

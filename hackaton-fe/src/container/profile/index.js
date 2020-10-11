@@ -55,8 +55,12 @@ class Profile extends React.Component {
         this.setState({editting: !this.state.editting})
     }
 
+    saveSensitiveProfile = () => {
+        this.setState({editting: !this.state.editting})
+    }
+
     render() {
-        
+        console.log(this.state, 'state')
         return (
         <div className='mt-4'>
                 <div className='container'>
@@ -72,10 +76,10 @@ class Profile extends React.Component {
                                 </div>
                                 
                                 <div className='menu-group mt-3 mb-5'>
-                                        <Button block className={(this.state.showPage === 'basic' ? 'button-primary ': '') + 'basic text-center'} onClick={()=> this.setState({showPage: 'basic'})}>
+                                        <Button block className={(this.state.showPage === 'basic' ? 'button-primary ': '') + 'basic text-center'} onClick={()=> this.setState({showPage: 'basic', editting: false})}>
                                             Basic Information
                                         </Button>
-                                        <Button block className={(this.state.showPage === 'sensitive' ? 'button-primary ': '') +'sensitive text-center'} onClick={()=> this.setState({showPage: 'sensitive'})}>
+                                        <Button block className={(this.state.showPage === 'sensitive' ? 'button-primary ': '') +'sensitive text-center'} onClick={()=> this.setState({showPage: 'sensitive', editting: false})}>
                                             Sensitive Information
                                         </Button>
                                     </div>
@@ -106,11 +110,18 @@ class Profile extends React.Component {
                                             </FormGroup>
                                             </div>
 
-                                            <div className='col-md-6'>
+                                            <div className='col-md-12'>
                                             <FormGroup>
                                                 <div>Email: </div>
-                                                <Input invalid={this.state.errMsg['name'] ? true: false} className='input' name='email' type='text' placeholder='Email' value={this.state.email || this.props.profile.user.email} onChange={this.changeHandler}/>
-                                                { this.state.errMsg['email'] ? (<FormFeedback>{this.state.errMsg['email']} </FormFeedback> ) : null}
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.email}</div>
+                                            </FormGroup>
+                                            </div>
+
+                                            <div className='col-md-12'>
+                                            <FormGroup>
+                                                <div>Alamat: </div>
+                                                <Input invalid={this.state.errMsg['address'] ? true: false} className='input' name='address' type='text' placeholder='Alamat' value={this.state.address || this.props.profile.user.address} onChange={this.changeHandler}/>
+                                                { this.state.errMsg['address'] ? (<FormFeedback>{this.state.errMsg['address']} </FormFeedback> ) : null}
                                             </FormGroup>
                                             </div>
 
@@ -127,20 +138,24 @@ class Profile extends React.Component {
                                         <div className='row'>
                                             <div className='col-md-6'>
                                                 <div>Nama Depan: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.firstName}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.firstName || '-'}</div>
                                             </div>
                                             <div className='col-md-6'>
                                                 <div>Nama Belakang: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.lastName}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.lastName || '-'}</div>
                                             </div>
 
-                                            <div className='col-md-6'>
+                                            <div className='col-md-12'>
                                                 <div>Email: </div>
-                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.email}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.email || '-'}</div>
+                                            </div>
+                                            <div className='col-md-12'>
+                                                <div>Alamat: </div>
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.address || '-'}</div>
                                             </div>
                                             {/* <div className='col-md-6'>
                                                 <div>Kota: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.city || ''}</div>
+                                                <div className='inputMenu h6 mb-3'>{this.props.profile.user.city || ''}</div>
                                             </div> */}
 
                                         </div>
@@ -158,31 +173,62 @@ class Profile extends React.Component {
                                     <div className='profile'>
                                         <h3 className='mb-5'>Detail Akun</h3>
                                         
+                                        {!this.state.editting ? (
+                                        <>
                                         <div className='row'>
-                                            <div className='col-md-6'>
-                                                <div>KTP: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.firstName}</div>
-                                            </div>
-                                            <div className='col-md-6'>
-                                                <div>CC: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.lastName}</div>
-                                            </div>
-
                                             <div className='col-md-12'>
-                                                <div>Alamat: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.email}</div>
+                                                <div>KTP: </div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.props.profile.user.ktp || '-' : '****'}</div>
+                                            </div>
+                                            <div className='col-md-12'>
+                                                <div>CC: </div>
+                                                <div className='inputMenu h6 mb-3'>{this.state.showSensitive ? this.props.profile.user.cc|| '-' : '****'}</div>
                                             </div>
                                             
-                                            <div className='col-md-6'>
-                                                <div>Kecamatan: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.firstName}</div>
-                                            </div>
-                                            <div className='col-md-6'>
-                                                <div>KodePost: </div>
-                                                <div className='ml-5 h6 mb-3'>{this.props.profile.user.lastName}</div>
-                                            </div>
-
                                         </div>
+                                        <div className='text-right mt-3'>
+                                            {this.state.showSensitive ? (
+                                                <>
+                                                    <Button className='button-primary px-5 m-3' onClick={()=> {this.setState({showSensitive: !this.state.showSensitive})}}>
+                                                        Sembunyikan
+                                                    </Button>
+                                                    <Button className='button-primary px-5' onClick={()=> {this.setState({editting: !this.state.editting})}}>
+                                                        Ubah
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <Button className='button-primary px-5' onClick={()=> {this.setState({showSensitive: !this.state.showSensitive})}}>
+                                                    Tunjukan
+                                                </Button>
+                                            )}
+                                        </div>
+                                        </>
+                                        ) : ( 
+                                            <>
+                                                {/* not editting profile */}
+                                                <div className='row'>
+                                                    <div className='col-md-12'>
+                                                        <FormGroup>
+                                                            <div>KTP: </div>
+                                                            <Input invalid={this.state.errMsg['ktp'] ? true: false} className='input' name='ktp' type='text' placeholder='ktp' value={this.state.ktp} onChange={this.changeHandler}/>
+                                                            { this.state.errMsg['ktp'] ? (<FormFeedback>{this.state.errMsg['ktp']} </FormFeedback> ) : null}
+                                                        </FormGroup>
+                                                    </div>
+                                                    <div className='col-md-12'>
+                                                        <FormGroup>
+                                                            <div>CC: </div>
+                                                            <Input invalid={this.state.errMsg['cc'] ? true: false} className='input' name='cc' type='text' placeholder='Credit Card' value={this.state.cc} onChange={this.changeHandler}/>
+                                                            { this.state.errMsg['cc'] ? (<FormFeedback>{this.state.errMsg['cc']} </FormFeedback> ) : null}
+                                                        </FormGroup>
+                                                    </div>
+                                                </div>
+                                                <div className='text-right mt-3'>
+                                                    <Button className='button-primary px-5' onClick={this.saveSensitiveProfile}>
+                                                        Simpan
+                                                    </Button>
+                                                </div>
+                                            </>
+                                            )}
                                     </div>
                                 </div>
                             }

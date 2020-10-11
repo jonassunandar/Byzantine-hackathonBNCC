@@ -2,11 +2,17 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import helper from '../../utils/helper.js';
+import './dashboard.css';
 import Table from '../../component/Table';
 import Modal from '../../component/DetailModal';
 import { FaPlus, FaAngleLeft, FaAngleDoubleLeft, FaAngleDoubleRight, FaAngleRight, FaSearch } from 'react-icons/fa';
 
 import {
+    Card,
+    CardImg,
+    CardImgOverlay,
+    CardTitle,
+    CardText,
     Button,
     Spinner,
     InputGroup,
@@ -101,8 +107,68 @@ class Event extends React.Component {
         
         const lang = helper.lang(this.props.language)
         return (
-        <div className='mt-3'>
-               
+        <div className=''>
+               <div className='banner'>
+               <Card inverse>
+                    <CardImg className='img-fluid imgBg' width="100%" maxHeight='80vh' src="/bg.png" alt="Card image cap" />
+                    <CardImgOverlay>
+                    {/* <CardTitle>Card Title</CardTitle> */}
+                    <CardText className='text-center text-black h2 vertical-align-middle m-auto bannerTitle'>
+                        Byzantine
+                    </CardText>
+                    <CardText className='text-center text-black h2 vertical-align-middle m-auto bannerText'>
+                        Belanja Aman bersama Blockchain!
+                    </CardText>
+                    <CardText>
+                        {/* <small className="text-muted">Last updated 3 mins ago</small> */}
+                    </CardText>
+                    </CardImgOverlay>
+                </Card>
+                   {/* <img className='img-fluid' src='/bg.jpg'/> */}
+               </div>
+
+               <div className='info my-4'>
+                   <div className='row align-items-center'>
+                       <div className='col-md-8'>
+                           <div className='row align-items-center'>
+                               <div className='col-4 text-right'><img className='img-fluid dashboard-icon' src='/user.png'></img></div>
+                               <div className='col-4 text-center'><img className='img-fluid dashboard-icon' src='/bc.jpg'></img></div>
+                               <div className='col-4 text-left'><div className='h2' style={{color: 'blue', fontSize: '4vw'}}>Byzantine</div></div>
+                           </div>
+                       </div>
+                       <div className='col-md-4'>
+                           <div className='cardInfo p-3'>
+                               <div className='cardText p-3'>
+                               Dengan menggunakan blockchain, kamu dapat memiliki kendali penuh atas data pribadimu. Tidak ada yang bisa mengubah, dan bahkan melihat data penting kamu jika kamu tidak memberi otoritas orang tersebut. Jadi kamu pun pasti aman dari serangan hacker!
+                               </div>
+                               <div className='cardFooter my-3'>
+                                   <Button block className='button-primary'>See More</Button>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+
+               <div className='advantages my-5'>
+                   <div className='row no-gutters'>
+                       <div className='col-3 adv text-center py-3'>
+                           <img className='img-fluid' src='/logo192.png'></img>
+                           <div className='advInfo'>Lorem Ipsum</div>
+                       </div>
+                       <div className='col-3 adv2 text-center py-3'>
+                           <img className='img-fluid' src='/logo192.png'></img>
+                           <div className='advInfo'>Lorem Ipsum</div>
+                       </div>
+                       <div className='col-3 adv3 text-center py-3'>
+                           <img className='img-fluid' src='/logo192.png'></img>
+                           <div className='advInfo'>Lorem Ipsum</div>
+                       </div>
+                       <div className='col-3 adv4 text-center py-3'>
+                           <img className='img-fluid' src='/logo192.png'></img>
+                           <div className='advInfo'>Lorem Ipsum</div>
+                       </div>
+                   </div>
+               </div>
         </div>
       )
     }
