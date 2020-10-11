@@ -17,8 +17,12 @@
     height: auto */
 }
 
+.banner{
+    max-height: 80vh;
+}
 .imgBg{
-    max-height: 90vh;
+    max-height: 80vh;
+    object-fit: cover;
 }
 
 .adv{

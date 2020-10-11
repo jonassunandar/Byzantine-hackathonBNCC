@@ -120,21 +120,16 @@ class Event extends React.Component {
                         Belanja Aman bersama Blockchain!
                     </CardText>
                     <CardText>
-                        {/* <small className="text-muted">Last updated 3 mins ago</small> */}
+                       
                     </CardText>
                     </CardImgOverlay>
                 </Card>
-                   {/* <img className='img-fluid' src='/bg.jpg'/> */}
                </div>
 
                <div className='info my-4'>
                    <div className='row align-items-center'>
-                       <div className='col-md-8'>
-                           <div className='row align-items-center'>
-                               <div className='col-4 text-right'><img className='img-fluid dashboard-icon' src='/user.png'></img></div>
-                               <div className='col-4 text-center'><img className='img-fluid dashboard-icon' src='/bc.jpg'></img></div>
-                               <div className='col-4 text-left'><div className='h2' style={{color: 'blue', fontSize: '4vw'}}>Byzantine</div></div>
-                           </div>
+                       <div className='col-md-8 text-center'>
+                           <img className='img-fluid' src='/info.png' />
                        </div>
                        <div className='col-md-4'>
                            <div className='cardInfo p-3'>

@@ -1,11 +1,11 @@
 
 let initialState = {
     user: {
-        name: 'Jonas Sunandar',
-        firstName: 'Jonas',
-        lastName: 'Sunandar',
-        initial: 'JS',
-        email: 'jonassunandar@jonas.sunandar'
+        // name: 'Jonas Sunandar',
+        // firstName: 'Jonas',
+        // lastName: 'Sunandar',
+        // initial: 'JS',
+        // email: 'jonassunandar@jonas.sunandar'
     }
 }
 
