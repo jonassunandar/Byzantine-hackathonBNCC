@@ -11,10 +11,8 @@ const Wallet = require('ethereumjs-wallet');
 /*global web3, contract, assert, artifacts*/
 contract("User", accounts => {
     let userSC,sdk, contractAddr, userContract;
-    // ,ipfs;
     before(async()=>{
         sdk = new SDK();
-        console.log(sdk.generatedWallet("seed"));
         // ipfs = await IPFS.create();
     })
     let address = [];
@@ -185,15 +183,15 @@ contract("User", accounts => {
             }
         });
         
-        // it('can add item in ipfs', async()=>{
-        //     cid = await ipfs.add(JSON.stringify(input));
-        //     console.log("nicee ", cid.length);
-        // });
+        it('can add item in ipfs', async()=>{
+            cid = await ipfs.add(JSON.stringify(input));
+            assert.strictEqual(cid!=null, true, "cid is not returned");
+        });
         
-        it('can add ', async()=>{
-            // user.decrypt(await user.encrypt("hallo"));
-            // let result = await ipfs.cat(cid);
-            // console.log("result", result);
+        it('can encrypt decvrypt ', async()=>{
+            let originalText = await user.decrypt(await user.encrypt("hallo"));
+            assert.strictEqual(originalText, "hallo", "encryption is not the same")
+            
         })
     })
 })

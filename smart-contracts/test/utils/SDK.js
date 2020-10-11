@@ -1,6 +1,8 @@
 let Web3 = require("web3");
 let ENS = require('ethereum-ens');
 const chains = require('./chainID.json');
+const ecies = require("eth-ecies");
+const util = require('ethereumjs-util');
 
 module.exports = class GeneralizeSDK {
     constructor(_ensAddress, _rpc="127.0.0.1:8545"){
@@ -129,7 +131,7 @@ module.exports = class GeneralizeSDK {
     }
 
     async contract(method, callback, addr, ...args){
-        console.log("method addr", method, addr)
+        // console.log("method addr", method, addr)
         let ABI = require("../../user.json"); //WARNINING!!
         
         let res = {
@@ -187,7 +189,7 @@ module.exports = class GeneralizeSDK {
                                 console.log(err);
                                 gasLimit = 30000000;
                             };
-                            console.log("gas limit bro ", gasLimit);
+                            // console.log("gas limit bro ", gasLimit);
                             let tx = {
                                 from: fromAddress,
                                 to: this.__addr,
@@ -282,29 +284,29 @@ module.exports = class GeneralizeSDK {
     async generatedWallet (seed) {
         return {
             encrypt: (data)=>{
-                // let pk = this.web3.utils.sha3(seed);
-                // pk = this.web3.eth.accounts.privateKeyToAccount(pk).privateKey;
+                let pk = this.web3.utils.sha3(seed);
+                pk = this.web3.eth.accounts.privateKeyToAccount(pk).privateKey;
                 // // console.log(Wallet);
                 // console.log("ini pk ", pk);
                 // // const wallet = Wallet.fromPrivateKey(util.toBuffer(pk))
                 // // const pubkey= wallet.getPublicKeyString()
                 // // console.log("yow", pubkey);
                 // // console.log("pubkey ", privateToPublic(pk).toString());
-                // let bufferPubKey = util.privateToPublic(pk);
-                // let bufferData = new Buffer(data);
-                // let encryptedData = ecies.encrypt(bufferPubKey, bufferData);
+                let bufferPubKey = util.privateToPublic(pk);
+                let bufferData = new Buffer(data);
+                let encryptedData = ecies.encrypt(bufferPubKey, bufferData);
                 // // console.log(encryptedData.toString('base64'));
-                // return encryptedData.toString('base64');
+                return data;
             },
             decrypt: (encryptedData)=>{
-                // let pk = web3.utils.sha3(seed);
-                // pk = web3.eth.accounts.privateKeyToAccount(pk).privateKey;
+                let pk = this.web3.utils.sha3(seed);
+                pk = this.web3.eth.accounts.privateKeyToAccount(pk).privateKey;
                 // console.log("sampe sini ?", encryptedData);
-                // encryptedData = new Buffer(encryptedData, 'base64');
-                // let userPrivateKey = new Buffer(pk, 'hex');
+                let encryptedDat = new Buffer(encryptedData, 'base64');
+                let userPrivateKey = new Buffer(pk, 'hex');
                 // let decryptedData = ecies.decrypt(userPrivateKey, encryptedData);
                 // console.log("decrypted data", decryptedData);
-                // return decryptedData.toString('utf8');
+                return encryptedData;
             },
             sign: async (tx)=> {
                 let pk = this.web3.utils.sha3(seed);
