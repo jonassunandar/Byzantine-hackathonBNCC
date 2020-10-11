@@ -20,11 +20,43 @@ const getBlockChainAddressAndSalt = async (email) => {
   return [userid, blockchainAddress, salt, null]
 }
 
+const getPassword = async (email) => {
+  email = dbaccess.escapeParameterString(email)
+  
+  var password, salt;
+  
+  try{
+    var results = await pool.query('SELECT password, pwd_salt FROM user_test WHERE email = $1', [email])
+  
+    salt = results.rows[0].pwd_salt
+    password = results.rows[0].password
+    
+  }catch(err){
+    return [null, null, err];
+  }
+  
+  return [password, salt, null]
+}
+
 const createNewUser = async (email, blockchainAddress, salt, response) => {
   email = dbaccess.escapeParameterString(email)
   blockchainAddress = dbaccess.escapeParameterString(blockchainAddress)
-  console.log
   pool.query('INSERT INTO users (email, blockchain_address, pwd_salt) VALUES($1, $2, $3)', [email, blockchainAddress, salt])
+    .then((results) => {
+      response.status(200).json({
+        "message": "register success"
+      })
+    }).catch((err) => {
+      response.status(200).json({
+        'error': err,
+      })
+      throw(err)
+    })
+}
+
+const createUserBenchmark = async (email, password, salt, response) => {
+  email = dbaccess.escapeParameterString(email)
+  pool.query('INSERT INTO user_test (email, password, pwd_salt) VALUES($1, $2, $3)', [email, password, salt])
     .then((results) => {
       response.status(200).json({
         "message": "register success"
@@ -91,4 +123,6 @@ module.exports = {
     updateUserProfile,
     getUserProfile,
     createNewUser,
+    createUserBenchmark,
+    getPassword
 }

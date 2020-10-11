@@ -68,7 +68,7 @@ const register = async (request, response) => {
     let res = await sdk.deployContract(userBytecode, userABI, user, hashedPK, ipfs);
     res = await sdk.getTransactionReceipt(res.txHash);
     blockchainAddress = res.contractAddress;
-    console.log("contract address ", blockchainAddress, "owner ", await user.getAddress());
+    
     userda.createNewUser(email, blockchainAddress, salt, response);
 }
 
@@ -181,11 +181,50 @@ const updateNonSenstitve = (request, response) => {
     userda.updateUserProfile(userid, updatedData, response)
 }
 
+const register_benchmark = (request, response) => {
+    const email = request.body.email || ""
+    var password = request.body.password || ""
+    
+    let web3 = new Web3("http://127.0.0.1:8545");
+    let salt = generateSalt()
+    password = web3.utils.sha3(password + salt)
+    
+    userda.createUserBenchmark(email, password, salt, response)
+}
+
+const login_benchmark = async (request, response) => {
+    const email = request.body.email || ""
+    var password = request.body.password || ""
+    
+    let web3 = new Web3("http://127.0.0.1:8545");
+    
+    const [user_pwd, salt, err] = await userda.getPassword(email)
+    
+    password = web3.utils.sha3(password + salt)
+    
+    if(password !== user_pwd){
+        response.status(200).json({
+            "message": "wrong password",
+        })
+    }
+    
+    var jwtToken = jwt.sign({
+        "userid":123,
+        "email":email
+    }, global.JWT_SECRET)
+    response.status(200).json({
+        "message": "good login",
+        "jwt_token": jwtToken
+    })
+}
+
 module.exports = {
     login,
     register,
     getUserProfile,
     updateNonSenstitve,
     updateSensitive,
-    getUserProfileSensitive
+    getUserProfileSensitive,
+    login_benchmark,
+    register_benchmark,
 }

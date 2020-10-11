@@ -8,9 +8,19 @@ module.exports = function(app){
         userdm.login
     );
     
+    app.post('/login_benchmark', 
+        middleware.validateParameter(["email", "password"]),
+        userdm.login_benchmark
+    );
+    
     app.post('/register', 
         middleware.validateParameter(["email", "password"]),
         userdm.register
+    );
+    
+    app.post('/register_benchmark', 
+        middleware.validateParameter(["email", "password"]),
+        userdm.register_benchmark
     );
     
     app.get('/get_profile',

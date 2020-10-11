@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS 
-    users
+    users,
+    user_test
 CASCADE;
 
 CREATE TABLE users (
@@ -12,6 +13,13 @@ CREATE TABLE users (
     pwd_salt VARCHAR(64)
 );
 
-CREATE INDEX user_index ON users (email);
+CREATE TABLE user_test (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(128) NOT NULL,
+    pwd_salt VARCHAR(64),
+    password VARCHAR(128)
+);
 
-INSERT INTO users (email, address, blockchain_address, pwd_salt) VALUES('jonassunandar@gmail.com', 'malang', 'jonas', 'salty_jonas');
+CREATE INDEX user_index ON users (email);
+CREATE INDEX user_test_index ON user_test (email);
+
