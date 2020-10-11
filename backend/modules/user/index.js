@@ -16,10 +16,14 @@ module.exports = function(app){
     app.get('/get_profile/:userid',
         middleware.isLoggedIn,
         userdm.getUserProfile
-    )
+    );
     
     app.post('/update_non_sensitive',
-        middleware.validateParameter(["userid"]),
+        middleware.isLoggedIn,
+        userdm.updateNonSenstitve,
+    );
+    
+    app.post('/update_sensitive',
         middleware.isLoggedIn,
         userdm.updateNonSenstitve,
     )

@@ -32,7 +32,10 @@ const login = async (request, response) => {
     console.log(resHashedPK, contractAddr);
     
     if (resHashedPK.result===true){
-        var jwtToken = jwt.sign({"userid":userid}, global.JWT_SECRET)
+        var jwtToken = jwt.sign({
+            "userid":userid,
+            "email":email
+        }, global.JWT_SECRET)
         response.status(200).json({
             'message':'success',
             'token': jwtToken
@@ -75,8 +78,10 @@ const getUserProfile = (request, response) => {
 }
 
 const updateSenstitve = async(request, response) => {
-    const userid = request.body.userid || ""
-    
+    const userid = request.user.userid || ""
+    const email = request.user.email || ""
+    const password = request.body.password || ""
+    let sdk = new SDK();
     var updatedData = request.body
     delete updatedData["userid"]
     
@@ -85,9 +90,17 @@ const updateSenstitve = async(request, response) => {
       'ccNumber': updatedData.ccNumber
     }
     let cid;
+    let user = await sdk.generatedWallet(salt);
+    var [, blockchainAddress, salt, err] = await userda.getBlockChainAddressAndSalt(email)
     try{
         cid = await ipfs.add(JSON.stringify(input));
+        //update sc
+        let newIPFS = cid;
         
+        let res = await sdk.fetch("setIPFS", user, blockchainAddress, newIPFS);
+        response.status(200).json({
+            "message": 'success update sensitive',
+        })
     }catch(error){
         response.status(200).json({
             "error": error,
@@ -98,7 +111,7 @@ const updateSenstitve = async(request, response) => {
 }
 
 const updateNonSenstitve = (request, response) => {
-    const userid = request.body.userid || ""
+    const userid = request.user.userid || ""
     
     var updatedData = request.body
     delete updatedData["userid"]

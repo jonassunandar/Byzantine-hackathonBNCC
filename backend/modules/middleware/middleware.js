@@ -18,9 +18,13 @@ const validateParameter = (requiredField) => {
 }
 
 const isLoggedIn = (req, res, next) => {
-    var token = req.headers("Login-Token")
+    var token = req.header("Login-Token")
     jwt.verify(token, global.JWT_SECRET)
         .then((results) => {
+            req.user = {
+                "id": results.userid,
+                "email": results.email
+            }
             next()
         }).catch((err) => {
             res.status(401).json({

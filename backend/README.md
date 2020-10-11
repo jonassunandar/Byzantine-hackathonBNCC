@@ -62,7 +62,6 @@ response
 request
 ```json
 {
-    "userid": 123, // required bois
     "address": "alamatlu",
 }
 ```
