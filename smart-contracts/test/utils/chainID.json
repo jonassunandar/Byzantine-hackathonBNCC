@@ -1,0 +1,10 @@
+{
+    "mainnet"    : 1,
+    "morden"     : 2,
+    "ropsten"    : 3,
+    "rinkeby"    : 4,
+    "goerli"     : 5,
+    "kovan"      : 42,
+    "haratoken"  : 1212,
+    "your_chainID": "1337"
+}
